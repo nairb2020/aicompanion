@@ -3,13 +3,13 @@ import threading
 import time
 from contextlib import ExitStack
 from pathlib import Path
-from typing import cast, Optional
+from typing import Optional, cast
 
 import yaml
 from dotenv import load_dotenv
 from firebase_admin import auth
 from langchain.text_splitter import CharacterTextSplitter
-from llama_index import SimpleDirectoryReader
+from llama_index.core import SimpleDirectoryReader
 from readerwriterlock import rwlock
 
 from realtime_ai_character.database.chroma import get_chroma
@@ -17,7 +17,6 @@ from realtime_ai_character.database.connection import get_db
 from realtime_ai_character.logger import get_logger
 from realtime_ai_character.models.character import Character as CharacterModel
 from realtime_ai_character.utils import Character, Singleton
-
 
 load_dotenv()
 logger = get_logger(__name__)
@@ -140,7 +139,9 @@ class CatalogManager(Singleton):
                 logger.info("Overwriting data for character: " + character_name)
                 self.load_data(character_name, directory / "data")
 
-        logger.info(f"Loaded {len(self.characters)} characters: IDs {list(self.characters.keys())}")
+        logger.info(
+            f"Loaded {len(self.characters)} characters: IDs {list(self.characters.keys())}"
+        )
 
     def load_character_from_sql_database(self):
         logger.info("Started loading characters from SQL database")
