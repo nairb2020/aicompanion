@@ -123,7 +123,7 @@ class CatalogManager(Singleton):
         :param overwrite: if True, overwrite existing data in the chroma.
         """
         if source == "default":
-            path = Path(__file__).parent
+            path = Path(__file__).parent / "default"
             excluded_dirs = {"__pycache__", "archive", "community"}
         elif source == "community":
             path = Path(__file__).parent / "community"

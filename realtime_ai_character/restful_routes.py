@@ -6,16 +6,8 @@ from typing import Optional
 
 import firebase_admin
 import httpx
-from fastapi import (
-    APIRouter,
-    Depends,
-    File,
-    Form,
-    HTTPException,
-    Request,
-    status as http_status,
-    UploadFile,
-)
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
+from fastapi import status as http_status
 from firebase_admin import auth, credentials
 from firebase_admin.exceptions import FirebaseError
 from google.cloud import storage
@@ -29,16 +21,19 @@ from realtime_ai_character.llm.highlight_action_generator import (
     generate_highlight_based_on_prompt,
 )
 from realtime_ai_character.llm.system_prompt_generator import generate_system_prompt
-from realtime_ai_character.models.interaction import Interaction
-from realtime_ai_character.models.feedback import Feedback, FeedbackRequest
+from realtime_ai_character.logger import get_logger
 from realtime_ai_character.models.character import (
     Character,
     CharacterRequest,
-    EditCharacterRequest,
     DeleteCharacterRequest,
+    EditCharacterRequest,
     GenerateHighlightRequest,
     GeneratePromptRequest,
 )
+from realtime_ai_character.models.feedback import Feedback, FeedbackRequest
+from realtime_ai_character.models.interaction import Interaction
+
+logger = get_logger(__name__)
 
 
 router = APIRouter()
@@ -81,6 +76,7 @@ async def status():
 
 @router.get("/characters")
 async def characters(user=Depends(get_current_user)):
+    logger.info(f"characters ... user: {user}")
     gcs_path = os.getenv("GCP_STORAGE_URL")
     if not gcs_path:
         raise HTTPException(
@@ -138,7 +134,9 @@ async def get_session_history(session_id: str, db: Session = Depends(get_db)):
 
 @router.post("/feedback")
 async def post_feedback(
-    feedback_request: FeedbackRequest, user=Depends(get_current_user), db: Session = Depends(get_db)
+    feedback_request: FeedbackRequest,
+    user=Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     if not user:
         raise HTTPException(

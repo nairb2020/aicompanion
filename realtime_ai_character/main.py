@@ -11,7 +11,6 @@ from realtime_ai_character.twilio.websocket import twilio_router
 from realtime_ai_character.utils import ConnectionManager
 from realtime_ai_character.websocket_routes import router as websocket_router
 
-
 app = FastAPI()
 
 app.add_middleware(

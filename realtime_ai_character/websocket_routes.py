@@ -1,7 +1,7 @@
 import asyncio
 import os
-import uuid
 import time
+import uuid
 from dataclasses import dataclass
 
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, WebSocket, WebSocketDisconnect
@@ -9,26 +9,25 @@ from firebase_admin import auth
 from firebase_admin.exceptions import FirebaseError
 from sqlalchemy.orm import Session
 
-from realtime_ai_character.audio.speech_to_text import get_speech_to_text, SpeechToText
-from realtime_ai_character.audio.text_to_speech import get_text_to_speech, TextToSpeech
+from realtime_ai_character.audio.speech_to_text import SpeechToText, get_speech_to_text
+from realtime_ai_character.audio.text_to_speech import TextToSpeech, get_text_to_speech
 from realtime_ai_character.character_catalog.catalog_manager import (
     CatalogManager,
     get_catalog_manager,
 )
 from realtime_ai_character.database.connection import get_db
-from realtime_ai_character.llm import get_llm, LLM
+from realtime_ai_character.llm import LLM, get_llm
 from realtime_ai_character.llm.base import AsyncCallbackAudioHandler, AsyncCallbackTextHandler
 from realtime_ai_character.logger import get_logger
 from realtime_ai_character.models.interaction import Interaction
 from realtime_ai_character.utils import (
-    build_history,
     ConversationHistory,
+    Transcript,
+    build_history,
     get_connection_manager,
     get_timer,
     task_done_callback,
-    Transcript,
 )
-
 
 logger = get_logger(__name__)
 
